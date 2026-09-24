@@ -8,8 +8,8 @@
   function url(p) { var b = window.MOCRO_CONFIG.SITE_BASE; if (b.slice(-1) !== '/') b += '/'; return b + p; }
   function qs(n) { var v = new URLSearchParams(window.location.search).get(n); if (v) return v; var p = window.location.pathname.replace(/\/+$/, ''); var seg = p.split('/'); return seg.pop() || ''; }
   function el(t, c, x) { var e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; }
-  function dateStr(iso) { if (!iso) return ''; try { return new Date(iso).toLocaleDateString('ar-TN', { year: 'numeric', month: 'long', day: 'numeric' }); } catch (e) { return iso.slice(0, 10); } }
-  function readingTime(content) { var w = (content || '').trim().split(/\s+/).length; var m = Math.max(1, Math.round(w / 180)); return m + (m === 1 ? ' دقيقة' : ' دقائق'); }
+  function dateStr(iso) { if (!iso) return ''; try { return new Date(iso).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' }); } catch (e) { return iso.slice(0, 10); } }
+  function readingTime(content) { var w = (content || '').trim().split(/\s+/).length; var m = Math.max(1, Math.round(w / 180)); return m + (m === 1 ? ' min' : ' min'); }
 
   function chevron(cls) {
     var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -30,20 +30,20 @@
     var slug = qs('slug');
     var grid = document.getElementById('listing-grid');
     var head = document.getElementById('page-head');
-    if (!slug) { grid.innerHTML = '<div class="empty-state">لم يتم تحديد قسم.</div>'; return; }
+    if (!slug) { grid.innerHTML = '<div class="empty-state">No category specified.</div>'; return; }
 
     var cr = await M.categoryBySlug(slug);
     var cat = cr.data;
-    if (!cat) { grid.innerHTML = '<div class="empty-state">القسم غير موجود.</div>'; return; }
+    if (!cat) { grid.innerHTML = '<div class="empty-state">Category not found.</div>'; return; }
 
-    document.title = cat.name + ' — مُوكْرُو';
+    document.title = cat.name + ' — MOCRO';
     var canon = document.querySelector('link[rel="canonical"]');
     if (canon) canon.setAttribute('href', url('category/' + encodeURIComponent(cat.slug)));
     else { canon = document.createElement('link'); canon.setAttribute('rel', 'canonical'); canon.setAttribute('href', url('category/' + encodeURIComponent(cat.slug))); document.head.appendChild(canon); }
     head.innerHTML = '';
 
     var bc = el('nav', 'breadcrumb');
-    var homeLink = el('a', null, 'الرئيسية');
+    var homeLink = el('a', null, 'Home');
     homeLink.href = url('index.html');
     var sep = chevron('breadcrumb-arrow');
     var cur = el('span', 'breadcrumb-current', cat.name);
@@ -58,7 +58,7 @@
     var ar = await M.articlesByCategory(slug);
     var articles = (ar.data || []).map(M.normalize);
     grid.innerHTML = '';
-    if (!articles.length) { grid.innerHTML = '<div class="empty-state">لا توجد مقالات منشورة في هذا القسم بعد.</div>'; return; }
+    if (!articles.length) { grid.innerHTML = '<div class="empty-state">No published articles in this category yet.</div>'; return; }
 
     var list = el('div', 'journal-list');
     articles.forEach(function (a) {
@@ -72,7 +72,7 @@
       body.appendChild(el('div', 'sr-title', a.title));
       var meta = el('div', 'sr-meta');
       meta.appendChild(el('span', 'sr-date', dateStr(a.published_at)));
-      meta.appendChild(el('span', null, ' · قراءة ' + readingTime(a.content)));
+      meta.appendChild(el('span', null, ' · ' + readingTime(a.content)));
       body.appendChild(meta);
       item.appendChild(body);
       item.addEventListener('click', function () { window.location.href = href; });

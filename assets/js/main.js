@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  // Theme is intentionally hard-locked to light (القالب نهار/أبيض فقط).
+  // Theme is intentionally hard-locked to light (day/white only).
 
   var burger = document.querySelector('[data-burger]');
   var menu = document.getElementById('mobile-menu');

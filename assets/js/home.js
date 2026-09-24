@@ -8,8 +8,8 @@
 
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
   function url(path) { var b = M.client !== undefined ? window.MOCRO_CONFIG.SITE_BASE : ''; if (b && b.slice(-1) !== '/') b += '/'; return b + path; }
-  function dateStr(iso) { if (!iso) return ''; try { return new Date(iso).toLocaleDateString('ar-TN', { year: 'numeric', month: 'long', day: 'numeric' }); } catch (e) { return iso.slice(0, 10); } }
-  function readingTime(content) { var w = (content || '').trim().split(/\s+/).length; var m = Math.max(1, Math.round(w / 180)); return m + (m === 1 ? ' دقيقة' : ' دقائق'); }
+  function dateStr(iso) { if (!iso) return ''; try { return new Date(iso).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' }); } catch (e) { return iso.slice(0, 10); } }
+  function readingTime(content) { var w = (content || '').trim().split(/\s+/).length; var m = Math.max(1, Math.round(w / 180)); return m + (m === 1 ? ' min' : ' min'); }
   function artUrl(a) { return url('article/' + encodeURIComponent(a.slug)); }
   function catUrl(c) { return url('category/' + encodeURIComponent(c.slug)); }
 
@@ -67,7 +67,7 @@
     }
   }
 
-  // حالة الفلترة + البيانات
+  // Filter state + data
   var cats = [];
   var all = [];
   var curFilter = 'all';
@@ -86,7 +86,7 @@
     item.setAttribute('aria-label', a.title);
     var body = el('div', 'sr-body');
     body.appendChild(el('div', 'sr-title', a.title));
-    body.appendChild(el('div', 'sr-meta', dateStr(a.published_at) + ' · قراءة ' + readingTime(a.content)));
+    body.appendChild(el('div', 'sr-meta', dateStr(a.published_at) + ' · ' + readingTime(a.content)));
     item.appendChild(body);
     item.addEventListener('click', function () { window.location.href = href; });
     item.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); window.location.href = href; } });
@@ -97,7 +97,7 @@
     var host = document.getElementById('home-filter');
     if (!host) return;
     host.innerHTML = '';
-    var chips = [{ slug: 'all', name: 'الكل' }].concat(cats.map(function (c) { return { slug: c.slug, name: c.name }; }));
+    var chips = [{ slug: 'all', name: 'All' }].concat(cats.map(function (c) { return { slug: c.slug, name: c.name }; }));
     chips.forEach(function (ch) {
       var b = el('button', 'filter-chip' + (curFilter === ch.slug ? ' is-active' : ''), ch.name);
       b.setAttribute('type', 'button');
@@ -111,7 +111,7 @@
     if (!host) return;
     host.innerHTML = '';
     var items = curFilter === 'all' ? all : all.filter(function (a) { return a && a.category_id === categoryIdBySlug(curFilter); });
-    if (!items.length) { host.appendChild(el('div', 'empty-state', 'لا توجد مقالات بعد.')); return; }
+    if (!items.length) { host.appendChild(el('div', 'empty-state', 'No articles yet.')); return; }
     items.forEach(function (a) { host.appendChild(renderCard(a)); });
   }
 

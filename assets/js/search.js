@@ -15,7 +15,7 @@
   function renderInto(results, container) {
     container.innerHTML = '';
     if (!results || !results.length) {
-      container.innerHTML = '<div class="search-empty">لا نتائج مطابقة.</div>';
+      container.innerHTML = '<div class="search-empty">No matching results.</div>';
       return;
     }
     var list = results.slice(0, MAX_RESULTS);
@@ -50,7 +50,7 @@
       syncVisibility(q);
       debounce = setTimeout(function () {
         M.search(q, 20).then(function (res) { renderInto(res.data || [], results); })
-          .catch(function () { results.innerHTML = '<div class="search-empty">حدث خطأ.</div>'; });
+          .catch(function () { results.innerHTML = '<div class="search-empty">An error occurred.</div>'; });
       }, 250);
     });
   }

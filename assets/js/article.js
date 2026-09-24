@@ -31,7 +31,7 @@
     s.setAttribute('class', 'icon verified-badge');
     s.setAttribute('viewBox', '0 -960 960 960');
     s.setAttribute('role', 'img');
-    s.setAttribute('aria-label', 'موثّق');
+    s.setAttribute('aria-label', 'Verified');
     s.innerHTML = ICON_PATHS['verified'] || '';
     return s;
   }
@@ -97,7 +97,7 @@
     if (!grid) return;
     grid.innerHTML = '';
     if (nav) nav.innerHTML = '';
-    if (!articles.length) { grid.innerHTML = '<div class="empty-state">لا توجد مقالات ذات صلة بعد.</div>'; return; }
+    if (!articles.length) { grid.innerHTML = '<div class="empty-state">No related articles yet.</div>'; return; }
     articles.forEach(function (a, i) {
       var item = el('article', 'related-item');
       var href = url('article/' + encodeURIComponent(a.slug));
@@ -137,7 +137,7 @@
       var d = document.createElement('button');
       d.className = 'related-dot' + (i === 0 ? ' is-active' : '');
       d.setAttribute('type', 'button');
-      d.setAttribute('aria-label', 'مقال ' + (i + 1));
+      d.setAttribute('aria-label', 'Article ' + (i + 1));
       d.addEventListener('click', function () { showSlide(i); });
       nav.appendChild(d);
     });
@@ -183,9 +183,9 @@
     var d = new Date(iso);
     if (isNaN(d.getTime())) return '';
     try {
-      return new Intl.DateTimeFormat('ar-MA', { day: 'numeric', month: 'long', year: 'numeric' }).format(d);
+      return new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).format(d);
     } catch (e) {
-      return d.toLocaleDateString('ar-MA', { day: 'numeric', month: 'long', year: 'numeric' });
+      return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
     }
   }
 
@@ -199,7 +199,7 @@
       avatar = document.createElement('img');
       avatar.className = 'author-card-avatar';
       avatar.src = author.avatar;
-      avatar.alt = author.name || 'الكاتب';
+      avatar.alt = author.name || 'Author';
       avatar.loading = 'lazy';
     } else {
       avatar = el('span', 'author-card-avatar placeholder');
@@ -246,16 +246,16 @@
     }
     var slug = qs('slug');
     var root = document.getElementById('article-root');
-    if (!slug) { root.innerHTML = '<div class="container empty-state">لم يتم تحديد مقال.</div>'; return; }
+    if (!slug) { root.innerHTML = '<div class="container empty-state">No article specified.</div>'; return; }
 
     var res;
     try { res = await M.articleBySlug(slug); }
-    catch (e) { root.innerHTML = '<div class="container empty-state">تعذّر تحميل المقال. حاول مرة أخرى.</div>'; return; }
+    catch (e) { root.innerHTML = '<div class="container empty-state">Failed to load the article. Please try again.</div>'; return; }
 
     var a = M.normalize(res && res.data ? res.data : null);
-    if (!a) { root.innerHTML = '<div class="container empty-state">المقال غير موجود أو غير منشور.</div>'; return; }
+    if (!a) { root.innerHTML = '<div class="container empty-state">The article does not exist or is not published.</div>'; return; }
 
-    document.title = a.title + ' — مُوكْرُو';
+    document.title = a.title + ' — MOCRO';
     if (a.excerpt) { var md = document.querySelector('meta[name="description"]'); if (md) md.setAttribute('content', a.excerpt); }
     var canon = document.querySelector('link[rel="canonical"]');
     if (canon) canon.setAttribute('href', url('article/' + encodeURIComponent(a.slug)));
@@ -267,7 +267,7 @@
 
     if (a.category) {
       var bc = el('nav', 'breadcrumb');
-      var homeLink = el('a', null, 'الرئيسية');
+      var homeLink = el('a', null, 'Home');
       homeLink.href = url('index.html');
       var sep = icon('chevron', 'breadcrumb-arrow');
       var catCrumb = el('a', null, a.category.name);
